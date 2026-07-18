@@ -493,9 +493,8 @@ async function callBackend(action, extraParams = {}) {
       body: JSON.stringify(payload)
     });
 
-    // Since 'no-cors' mode is used, we cannot read the response body directly,
-    // but the request completes successfully, and Firebase listeners sync the database.
-    // To enable readable responses, the Google Apps Script handles operations atomically.
+    // The request completes successfully, and Firebase listeners sync the database state.
+    // The Google Apps Script handles operations atomically.
     showToast(`${action.replace(/([A-Z])/g, ' $1')} requested!`, "success");
   } catch (error) {
     console.error("Backend request failed:", error);
