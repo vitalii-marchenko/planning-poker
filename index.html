@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A real-time planning poker tool for Agile estimation sessions. Powered by Google Apps Script and Firebase.">
+  <title>Planning Poker | Agile Effort Estimation</title>
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Sticky Header -->
+  <header>
+    <div class="logo">
+      <span>🃏</span> Planning Poker
+    </div>
+    <div id="user-display" class="flex-row" style="display: none;">
+      <div id="header-user-name" class="user-badge">Username</div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Screen 1: Landing / Room Creation & Joining -->
+    <section id="landing-screen" class="screen card-glass active">
+      <h2>Create or Join a Room</h2>
+      <p>Estimate ticket complexity in real-time with your team.</p>
+      
+      <!-- Create Room Section -->
+      <div class="form-group">
+        <label for="create-owner-name">Your Name</label>
+        <input type="text" id="create-owner-name" placeholder="Enter your name..." autocomplete="name">
+      </div>
+      
+      <div class="form-group">
+        <label for="create-deck-select">Card Deck Type</label>
+        <select id="create-deck-select">
+          <option value="fibonacci">Fibonacci (0, 1, 2, 3, 5, 8, 13, 21, ..., ?, ☕)</option>
+          <option value="days">Days (0.5, 1, 1.5, 2, 2.5, 3, 3.5, ..., 7, ?, ☕)</option>
+        </select>
+      </div>
+      
+      <button id="btn-create-room" class="btn">Create Room</button>
+      
+      <div class="divider">or</div>
+      
+      <!-- Join Room Section -->
+      <div class="form-group">
+        <label for="join-room-id">Join Existing Room</label>
+        <input type="text" id="join-room-id" placeholder="Enter 6-character code..." maxlength="6" style="text-transform: uppercase; text-align: center; letter-spacing: 0.15em;">
+      </div>
+      
+      <button id="btn-join-room" class="btn btn-secondary">Join Room</button>
+    </section>
+
+    <!-- Screen 2: Active Room & Voting Area -->
+    <section id="game-screen" class="screen">
+      <!-- Left side: Estimation Interface -->
+      <div class="game-area">
+        
+        <!-- Ticket Display / Estimation Panel -->
+        <div class="card-glass ticket-panel">
+          <div class="ticket-info">
+            <div class="ticket-label">Discussing Ticket</div>
+            <input type="text" id="ticket-input" class="ticket-title" readonly>
+          </div>
+          <div class="flex-row">
+            <span id="room-status-badge" class="user-badge" style="border-radius: var(--radius-sm)">Status</span>
+            <button id="btn-share" class="btn btn-secondary" style="width: auto; padding: 0.6rem 1rem;">
+              <span>🔗</span> Copy Link
+            </button>
+          </div>
+        </div>
+        
+        <!-- Card Deck -->
+        <div class="card-glass deck-section">
+          <h3>Choose your estimation card:</h3>
+          <div id="card-deck" class="card-deck">
+            <!-- Dynamic Cards Loaded from app.js -->
+          </div>
+        </div>
+
+        <!-- Room Statistics (Revealed State) -->
+        <div id="results-container" class="card-glass" style="display: none;">
+          <h3>Estimation Results</h3>
+          <div class="results-panel">
+            <div class="stat-box">
+              <div class="stat-label">Average</div>
+              <div id="stat-average" class="stat-val">-</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-label">Median</div>
+              <div id="stat-median" class="stat-val">-</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-label">Consensus</div>
+              <div id="stat-consensus" class="stat-val">-</div>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+
+      <!-- Right side: Voters Presence list and Control Panel -->
+      <div class="voters-panel">
+        
+        <!-- Room Owner Settings panel (Visible to Owner only) -->
+        <div id="owner-controls" class="card-glass" style="display: none; flex-direction: column; gap: 1rem; padding: 1.5rem;">
+          <h4 style="font-weight: 600; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.05em; color: hsl(var(--text-secondary))">Admin Controls</h4>
+          
+          <div id="deck-settings-group" class="form-group" style="margin-bottom: 0;">
+            <label for="deck-type-select" style="font-size: 0.75rem;">Change Deck</label>
+            <select id="deck-type-select" style="padding: 0.5rem 0.8rem; font-size: 0.9rem;">
+              <option value="fibonacci">Fibonacci</option>
+              <option value="days">Days (0.5 to 7)</option>
+            </select>
+          </div>
+          
+          <div class="admin-actions">
+            <button id="btn-reveal" class="btn" style="flex: 1; padding: 0.7rem 1rem;">Reveal Cards</button>
+            <button id="btn-reset" class="btn btn-secondary" style="flex: 1; padding: 0.7rem 1rem;">Reset Room</button>
+          </div>
+        </div>
+
+        <!-- Participants List -->
+        <div class="card-glass" style="flex: 1; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem;">
+          <h3>
+            <span>Participants</span>
+            <span id="voter-count" class="voter-count">0 online</span>
+          </h3>
+          <div id="voters-list" class="voters-list">
+            <!-- Dynamic voter rows loaded from app.js -->
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- Name Input Modal Dialog for invited guests -->
+  <dialog id="name-dialog" closedby="any" aria-labelledby="dialog-title">
+    <div class="dialog-content">
+      <div class="dialog-header">
+        <h3 id="dialog-title">Welcome to Planning Poker</h3>
+      </div>
+      <form id="name-form" method="dialog">
+        <div class="form-group">
+          <label for="join-name-input">Enter Your Name to Join Room <span id="room-id-display" class="accent-text">XXXXXX</span></label>
+          <input type="text" id="join-name-input" placeholder="Your name..." required autocomplete="name">
+        </div>
+        <button type="submit" class="btn">Enter Room</button>
+      </form>
+    </div>
+  </dialog>
+
+  <!-- Floating Toast Notifications -->
+  <div id="toast" class="toast" aria-live="polite">Notification</div>
+
+  <!-- Main scripts -->
+  <script type="module" src="app.js"></script>
+</body>
+</html>

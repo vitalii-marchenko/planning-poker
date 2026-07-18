@@ -1,0 +1,31 @@
+{
+  "rules": {
+    "rooms": {
+      "$roomId": {
+        ".read": "true",
+        "users": {
+          "$userId": {
+            ".write": "auth != null && auth.uid === $userId"
+          }
+        },
+        "ticket": { ".write": "false" },
+        "revealed": { ".write": "false" },
+        "deckType": { ".write": "false" }
+      }
+    },
+    "votes": {
+      "$roomId": {
+        ".read": "root.child('rooms').child($roomId).child('revealed').val() === true",
+        "$userId": {
+          ".write": "auth != null && auth.uid === $userId && root.child('rooms').child($roomId).child('revealed').val() !== true"
+        }
+      }
+    },
+    "owners": {
+      "$roomId": {
+        ".read": "false",
+        ".write": "false"
+      }
+    }
+  }
+}
