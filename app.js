@@ -47,6 +47,8 @@ let presenceSubscription = null;
 // ==========================================
 
 document.addEventListener('DOMContentLoaded', () => {
+  initThemeSwitcher();
+
   // Parse roomId from URL query param
   const urlParams = new URLSearchParams(window.location.search);
   roomId = urlParams.get('roomId');
@@ -655,3 +657,49 @@ function showToast(message, type = "success") {
     toast.classList.remove('show');
   }, 3000);
 }
+
+// ==========================================
+// THEME SWITCHER LOGIC
+// ==========================================
+
+function initThemeSwitcher() {
+  const toggleBtn = document.getElementById('btn-theme-toggle');
+  if (!toggleBtn) return;
+
+  toggleBtn.addEventListener('click', () => {
+    // Determine the next theme.
+    // By default, if data-theme is set, we toggle it.
+    // If data-theme is NOT set (meaning we are on system theme), we detect system preference and set the opposite.
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    let nextTheme;
+
+    if (currentTheme) {
+      nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    } else {
+      // No custom theme pinned; we are currently on system preference.
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      nextTheme = prefersDark ? 'light' : 'dark';
+    }
+
+    // Apply the next theme
+    document.documentElement.setAttribute('data-theme', nextTheme);
+    const metaColorScheme = document.querySelector('meta[name="color-scheme"]');
+    if (metaColorScheme) {
+      metaColorScheme.content = nextTheme;
+    }
+    localStorage.setItem('color-scheme', nextTheme);
+  });
+
+  // Listen to system theme changes so that we react if the user is on 'system' (meaning no user override is set)
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+    const colorScheme = localStorage.getItem('color-scheme');
+    // If no override exists, update the meta tag so that browser UI elements adapt properly.
+    if (!colorScheme) {
+      const metaColorScheme = document.querySelector('meta[name="color-scheme"]');
+      if (metaColorScheme) {
+        metaColorScheme.content = e.matches ? 'dark' : 'light';
+      }
+    }
+  });
+}
+
