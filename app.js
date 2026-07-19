@@ -129,16 +129,16 @@ function startListeningToRoom() {
     roomData = data;
     roomData.users = data.users || {};
 
-    // 1. If ticket changed, reset local card selection selection
-    if (prevTicket !== roomData.ticket) {
+    // 1. If ticket changed or we transitioned to a new voting round (revealed -> active), reset local vote selection
+    if (prevTicket !== roomData.ticket || (prevRevealed === true && !roomData.revealed)) {
       resetLocalVoteSelection();
     }
 
     // 2. Render UI components
     renderRoomInfo();
 
-    // 3. Render cards (in case deck type changed)
-    if (prevDeckType !== roomData.deckType || prevTicket !== roomData.ticket) {
+    // 3. Render cards (in case deck type, ticket, or revealed state changed)
+    if (prevDeckType !== roomData.deckType || prevTicket !== roomData.ticket || prevRevealed !== roomData.revealed) {
       renderCardDeck();
     }
 
@@ -220,6 +220,7 @@ function setupGameUI() {
   // Configure ticket editing based on ownership
   const ticketInput = document.getElementById('ticket-input');
   if (isOwner) {
+    ticketInput.readOnly = false;
     ticketInput.disabled = false;
     ticketInput.placeholder = "Enter ticket name & press Enter...";
 
@@ -228,9 +229,11 @@ function setupGameUI() {
       if (e.key === 'Enter') {
         const title = ticketInput.value.trim();
         callBackend('updateTicket', { ticket: title });
+        ticketInput.blur();
       }
     });
   } else {
+    ticketInput.readOnly = true;
     ticketInput.disabled = true;
     ticketInput.placeholder = "Waiting for owner to set ticket...";
   }
@@ -244,7 +247,7 @@ function setupGameUI() {
       callBackend('revealCards');
     });
 
-    document.getElementById('btn-reset').addEventListener('click', () => {
+    document.getElementById('btn-next-round').addEventListener('click', () => {
       const ticketInput = document.getElementById('ticket-input');
       callBackend('updateTicket', { ticket: ticketInput.value.trim() });
     });
@@ -257,8 +260,8 @@ function setupGameUI() {
 
 function renderRoomInfo() {
   const ticketInput = document.getElementById('ticket-input');
-  if (!isOwner) {
-    ticketInput.value = roomData.ticket;
+  if (!isOwner || document.activeElement !== ticketInput) {
+    ticketInput.value = roomData.ticket || '';
   }
 
   if (isOwner) {
