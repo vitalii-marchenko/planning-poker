@@ -6,6 +6,16 @@
   <meta name="description" content="A real-time planning poker tool for Agile estimation sessions. Powered by Google Apps Script and Firebase.">
   <title>Planning Poker | Agile Effort Estimation</title>
   
+  <meta name="color-scheme" content="light dark">
+  <script>
+    {
+      const colorScheme = localStorage.getItem("color-scheme");
+      if (colorScheme && colorScheme !== 'system') {
+        document.querySelector('meta[name="color-scheme"]').content = colorScheme;
+        document.documentElement.setAttribute('data-theme', colorScheme);
+      }
+    }
+  </script>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -15,8 +25,28 @@
     <div class="logo">
       <span>🃏</span> Planning Poker
     </div>
-    <div id="user-display" class="flex-row" style="display: none;">
-      <div id="header-user-name" class="user-badge">Username</div>
+    <div class="header-actions">
+      <button id="btn-theme-toggle" class="btn-theme-toggle" aria-label="Toggle theme">
+        <!-- Sun icon (shown in dark theme) -->
+        <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="4"></circle>
+          <path d="M12 2v2"></path>
+          <path d="M12 20v2"></path>
+          <path d="M4.93 4.93l1.41 1.41"></path>
+          <path d="M17.66 17.66l1.41 1.41"></path>
+          <path d="M2 12h2"></path>
+          <path d="M20 12h2"></path>
+          <path d="M6.34 17.66l-1.41 1.41"></path>
+          <path d="M19.07 4.93l-1.41 1.41"></path>
+        </svg>
+        <!-- Moon icon (shown in light theme) -->
+        <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+        </svg>
+      </button>
+      <div id="user-display" class="flex-row" style="display: none;">
+        <div id="header-user-name" class="user-badge">Username</div>
+      </div>
     </div>
   </header>
 

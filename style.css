@@ -22,12 +22,102 @@
   --bg-glass: rgba(255, 255, 255, 0.04);
   --bg-glass-heavy: rgba(255, 255, 255, 0.08);
   
+  /* Theme specific backgrounds, shadows, and assets */
+  --bg-gradient-1: rgba(139, 92, 246, 0.12);
+  --bg-gradient-2: rgba(16, 185, 129, 0.08);
+  --bg-header: rgba(14, 17, 24, 0.7);
+  --bg-input: rgba(0, 0, 0, 0.2);
+  --bg-voter-row: rgba(255, 255, 255, 0.02);
+  --bg-stat-box: rgba(255, 255, 255, 0.02);
+  --bg-card-gradient-end: rgba(255, 255, 255, 0.03);
+  --bg-backdrop: rgba(6, 8, 12, 0.85);
+  --shadow-box: rgba(0, 0, 0, 0.4);
+  
   /* Layout constraints */
   --radius-sm: 8px;
   --radius-md: 16px;
   --radius-lg: 24px;
   --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   --shadow-neon: 0 0 20px rgba(139, 92, 246, 0.15);
+  
+  /* Support system-wide theme preferences natively */
+  color-scheme: light dark;
+}
+
+/* Light mode overrides - System Preference */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg-base: 225, 20%, 95%;
+    --bg-surface: 0, 0%, 100%;
+    --bg-card: 225, 15%, 90%;
+    
+    --primary: 263, 75%, 55%;
+    --primary-glow: rgba(139, 92, 246, 0.15);
+    --primary-light: 263, 80%, 45%;
+    
+    --accent: 160, 84%, 32%;
+    --accent-glow: rgba(16, 185, 129, 0.15);
+    
+    --text-primary: 225, 25%, 12%;
+    --text-secondary: 225, 15%, 35%;
+    --text-muted: 225, 10%, 55%;
+    
+    --border-glass: rgba(0, 0, 0, 0.08);
+    --bg-glass: rgba(255, 255, 255, 0.4);
+    --bg-glass-heavy: rgba(255, 255, 255, 0.65);
+    
+    --bg-gradient-1: rgba(139, 92, 246, 0.06);
+    --bg-gradient-2: rgba(16, 185, 129, 0.04);
+    --bg-header: rgba(255, 255, 255, 0.7);
+    --bg-input: rgba(255, 255, 255, 0.8);
+    --bg-voter-row: rgba(0, 0, 0, 0.02);
+    --bg-stat-box: rgba(0, 0, 0, 0.02);
+    --bg-card-gradient-end: rgba(0, 0, 0, 0.02);
+    --bg-backdrop: rgba(240, 242, 245, 0.7);
+    --shadow-box: rgba(31, 41, 55, 0.08);
+    --shadow-neon: 0 8px 32px rgba(139, 92, 246, 0.06);
+  }
+}
+
+/* Light mode overrides - User Pinned */
+:root[data-theme="light"] {
+  --bg-base: 225, 20%, 95%;
+  --bg-surface: 0, 0%, 100%;
+  --bg-card: 225, 15%, 90%;
+  
+  --primary: 263, 75%, 55%;
+  --primary-glow: rgba(139, 92, 246, 0.15);
+  --primary-light: 263, 80%, 45%;
+  
+  --accent: 160, 84%, 32%;
+  --accent-glow: rgba(16, 185, 129, 0.15);
+  
+  --text-primary: 225, 25%, 12%;
+  --text-secondary: 225, 15%, 35%;
+  --text-muted: 225, 10%, 55%;
+  
+  --border-glass: rgba(0, 0, 0, 0.08);
+  --bg-glass: rgba(255, 255, 255, 0.4);
+  --bg-glass-heavy: rgba(255, 255, 255, 0.65);
+  
+  --bg-gradient-1: rgba(139, 92, 246, 0.06);
+  --bg-gradient-2: rgba(16, 185, 129, 0.04);
+  --bg-header: rgba(255, 255, 255, 0.7);
+  --bg-input: rgba(255, 255, 255, 0.8);
+  --bg-voter-row: rgba(0, 0, 0, 0.02);
+  --bg-stat-box: rgba(0, 0, 0, 0.02);
+  --bg-card-gradient-end: rgba(0, 0, 0, 0.02);
+  --bg-backdrop: rgba(240, 242, 245, 0.7);
+  --shadow-box: rgba(31, 41, 55, 0.08);
+  --shadow-neon: 0 8px 32px rgba(139, 92, 246, 0.06);
+}
+
+/* Explicit color-schemes based on theme selectors to adapt native scrollbars, etc. */
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
 }
 
 /* Reset & Base Styles */
@@ -41,8 +131,8 @@ body {
   font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   background-color: hsl(var(--bg-base));
   background-image: 
-    radial-gradient(at 0% 0%, rgba(139, 92, 246, 0.12) 0px, transparent 50%),
-    radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.08) 0px, transparent 50%);
+    radial-gradient(at 0% 0%, var(--bg-gradient-1) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, var(--bg-gradient-2) 0px, transparent 50%);
   background-attachment: fixed;
   color: hsl(var(--text-primary));
   min-height: 100vh;
@@ -81,7 +171,7 @@ header {
   position: sticky;
   top: 0;
   z-index: 10;
-  background: rgba(14, 17, 24, 0.7);
+  background: var(--bg-header);
 }
 
 .logo {
@@ -151,12 +241,12 @@ main {
 }
 
 .card-glass {
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--bg-glass);
   border: 1px solid var(--border-glass);
   backdrop-filter: blur(20px);
   border-radius: var(--radius-lg);
   padding: 2.5rem;
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4), var(--shadow-neon);
+  box-shadow: 0 8px 32px 0 var(--shadow-box), var(--shadow-neon);
 }
 
 .card-glass h2 {
@@ -191,7 +281,7 @@ main {
 
 input[type="text"], select {
   width: 100%;
-  background: rgba(0, 0, 0, 0.2);
+  background: var(--bg-input);
   border: 1px solid var(--border-glass);
   border-radius: var(--radius-sm);
   padding: 0.8rem 1rem;
@@ -339,7 +429,7 @@ input[type="text"]:focus, select:focus {
 
 .poker-card {
   aspect-ratio: 2/3;
-  background: linear-gradient(145deg, hsl(var(--bg-card)), rgba(255,255,255,0.03));
+  background: linear-gradient(145deg, hsl(var(--bg-card)), var(--bg-card-gradient-end));
   border: 1px solid var(--border-glass);
   border-radius: var(--radius-md);
   display: flex;
@@ -413,7 +503,7 @@ input[type="text"]:focus, select:focus {
   justify-content: space-between;
   padding: 0.8rem 1rem;
   border-radius: var(--radius-sm);
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--bg-voter-row);
   border: 1px solid var(--border-glass);
   transition: var(--transition-smooth);
 }
@@ -537,7 +627,7 @@ input[type="text"]:focus, select:focus {
 }
 
 .stat-box {
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--bg-stat-box);
   border: 1px solid var(--border-glass);
   border-radius: var(--radius-md);
   padding: 1.5rem;
@@ -570,7 +660,7 @@ dialog {
 }
 
 dialog::backdrop {
-  background-color: rgba(6, 8, 12, 0.85);
+  background-color: var(--bg-backdrop);
   backdrop-filter: blur(10px);
 }
 
@@ -647,7 +737,7 @@ dialog::backdrop {
 .copy-input-group {
   display: flex;
   gap: 0.5rem;
-  background: rgba(0,0,0,0.2);
+  background: var(--bg-input);
   border: 1px solid var(--border-glass);
   border-radius: var(--radius-sm);
   padding: 0.25rem;
@@ -684,3 +774,73 @@ dialog::backdrop {
   transform: translateX(-50%) translateY(0);
   opacity: 1;
 }
+
+/* Theme Toggle Button Styles */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.btn-theme-toggle {
+  background: var(--bg-glass);
+  border: 1px solid var(--border-glass);
+  color: hsl(var(--text-primary));
+  cursor: pointer;
+  padding: 0.6rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-smooth);
+  width: 40px;
+  height: 40px;
+}
+
+.btn-theme-toggle:hover {
+  background: var(--bg-glass-heavy);
+  transform: scale(1.08);
+}
+
+.btn-theme-toggle:active {
+  transform: scale(0.95);
+}
+
+.btn-theme-toggle svg {
+  width: 20px;
+  height: 20px;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  fill: none;
+  stroke: currentColor;
+}
+
+.btn-theme-toggle:hover svg {
+  transform: rotate(30deg);
+}
+
+.btn-theme-toggle .sun-icon {
+  display: none;
+}
+
+.btn-theme-toggle .moon-icon {
+  display: block;
+}
+
+/* Dark mode icon visibility */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .btn-theme-toggle .sun-icon {
+    display: block;
+  }
+  :root:not([data-theme="light"]) .btn-theme-toggle .moon-icon {
+    display: none;
+  }
+}
+
+:root[data-theme="dark"] .btn-theme-toggle .sun-icon {
+  display: block;
+}
+
+:root[data-theme="dark"] .btn-theme-toggle .moon-icon {
+  display: none;
+}
+
