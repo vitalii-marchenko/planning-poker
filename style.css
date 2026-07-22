@@ -380,35 +380,74 @@ input[type="text"]:focus, select:focus {
 /* Header Panel inside Room */
 .ticket-panel {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1.5rem;
-  padding: 2rem;
-}
-
-.ticket-info {
-  flex: 1;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.75rem 2rem;
 }
 
 .ticket-label {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   text-transform: uppercase;
   color: hsl(var(--text-muted));
   letter-spacing: 0.1em;
-  margin-bottom: 0.25rem;
+  font-weight: 600;
+}
+
+.ticket-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
 }
 
 .ticket-title {
-  font-size: 1.4rem;
-  font-weight: 700;
+  flex: 1;
+  font-size: 1.1rem;
+  font-weight: 600;
   color: hsl(var(--text-primary));
+  height: 44px;
+  padding: 0 1rem;
+  margin: 0;
 }
 
-.ticket-title:empty::after {
-  content: 'Estimating next ticket...';
-  color: hsl(var(--text-muted));
-  font-style: italic;
-  font-weight: 400;
+.ticket-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+.status-badge,
+.btn-share {
+  height: 44px;
+  padding: 0 1.25rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  box-sizing: border-box;
+  white-space: nowrap;
+  min-width: 135px;
+  width: auto;
+}
+
+@media (max-width: 640px) {
+  .ticket-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .ticket-actions {
+    width: 100%;
+  }
+
+  .status-badge,
+  .btn-share {
+    flex: 1;
+  }
 }
 
 /* Card Selection Area */

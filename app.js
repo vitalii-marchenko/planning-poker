@@ -123,31 +123,25 @@ function startListeningToRoom() {
     }
 
     const prevRevealed = roomData.revealed;
-    const prevDeckType = roomData.deckType;
     const prevTicket = roomData.ticket;
 
     roomData = data;
     roomData.users = data.users || {};
 
     // 1. If ticket changed or we transitioned to a new voting round (revealed -> active), reset local vote selection
-    if (prevTicket !== roomData.ticket || (prevRevealed === true && !roomData.revealed)) {
+    if ((prevTicket !== undefined && prevTicket !== roomData.ticket) || (prevRevealed === true && !roomData.revealed)) {
       resetLocalVoteSelection();
     }
 
     // 2. Render UI components
     renderRoomInfo();
+    renderCardDeck();
+    renderVotersList();
 
-    // 3. Render cards (in case deck type, ticket, or revealed state changed)
-    if (prevDeckType !== roomData.deckType || prevTicket !== roomData.ticket || prevRevealed !== roomData.revealed) {
-      renderCardDeck();
-    }
-
-    // 4. Handle revealed state changes (fetch votes or clear)
+    // 3. Handle revealed state changes (fetch votes or clear)
     if (prevRevealed !== roomData.revealed || prevRevealed === undefined) {
       syncVotesListener();
     }
-
-    renderVotersList();
     setupUserPresence();
   });
 }

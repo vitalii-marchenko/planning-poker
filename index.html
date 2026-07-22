@@ -16,7 +16,7 @@
       }
     }
   </script>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=2">
 </head>
 <body>
 
@@ -90,15 +90,15 @@
         
         <!-- Ticket Display / Estimation Panel -->
         <div class="card-glass ticket-panel">
-          <div class="ticket-info">
-            <div class="ticket-label">Discussing Ticket</div>
+          <div class="ticket-label">Discussing Ticket</div>
+          <div class="ticket-row">
             <input type="text" id="ticket-input" class="ticket-title" readonly>
-          </div>
-          <div class="flex-row">
-            <span id="room-status-badge" class="user-badge" style="border-radius: var(--radius-sm)">Status</span>
-            <button id="btn-share" class="btn btn-secondary" style="width: auto; padding: 0.6rem 1rem;">
-              <span>🔗</span> Copy Link
-            </button>
+            <div class="ticket-actions">
+              <span id="room-status-badge" class="status-badge user-badge">Status</span>
+              <button id="btn-share" class="btn btn-secondary btn-share">
+                <span>🔗</span> Copy Link
+              </button>
+            </div>
           </div>
         </div>
         
