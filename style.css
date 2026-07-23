@@ -408,6 +408,7 @@ input[type="text"]:focus, select:focus {
   height: 44px;
   padding: 0 1rem;
   margin: 0;
+  box-sizing: border-box;
 }
 
 .ticket-actions {
